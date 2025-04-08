@@ -43,7 +43,7 @@ def get_task_b():
     con = sqlite3.connect('bysykkel.db')
 
     # Use parameterized query to prevent SQL injection
-    query = "SELECT bike_name, bike_reperation_status FROM bike"
+    query = "SELECT bike_name, bike_status FROM bike"
 
     # Execute query with the table name
     df = pd.read_sql_query(query, con)

@@ -1,6 +1,7 @@
 
 from shiny import reactive, render
 from shiny.express import input, render, ui
+import utils
 from utils import *
 
 ui.page_opts(fillable=True)
@@ -42,10 +43,31 @@ def check_all_inputs(user_name, user_phone_number, user_email):
 
 
 
+# Path to db
+path = "bysykkel.db"
 
 ui.input_action_button("sub", "Submit")  
     
-@reactive.event(input.sub)
-def data():
-   return ("test")
+with ui.card():
+    @render.text
+    @reactive.event(input.sub)
+    def data():
+        if(check_all_inputs(input.user_name(), input.user_phone_number(), input.user_email())):
+            d = {
+                "user_name" : f"'{input.user_name()}'",
+                "user_phone_number" : f"'{input.user_phone_number()}'",
+                "user_email" : f"'{input.user_email()}'"
+                }
+
+            if(insert_to_table("user", d, path)):
+                return "User added"
+            else:
+                return "WTF"
+        else:
+            return "User not added, wrong input"
+
+        
+
+
+
 

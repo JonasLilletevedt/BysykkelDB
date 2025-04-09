@@ -1,3 +1,7 @@
+import sqlite3
+
+from shiny.ui import insert_accordion_panel
+
 # Checks if username is valid
 # name should only contain letters
 def check_valid_name(name):
@@ -28,3 +32,31 @@ def check_phone_number(phone_number):
 # email should contain '@'
 def check_valid_email(email):
     return '@' in email
+
+# Inserts to table
+def insert_to_table(table, dict_attributes_values, db_path):
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    # Sql command, input to sqlite
+    sql_command = f"INSERT INTO {table} ({",".join(list(dict_attributes_values.keys()))}) VALUES ({",".join(list(dict_attributes_values.values()))});" 
+    try:
+        cur.execute(sql_command)
+        print("Added to db")
+        # Commits
+        con.commit()
+        return True
+    except:
+        print("Not added")
+        print(sql_command)
+        return False
+
+# test_insert_to_table
+d = {
+        "user_name" : "'meg'",
+        "user_phone_number" : "1222222222'",
+        "user_email" : "'@@@@@t@@@@@'"
+        }
+
+insert_to_table("user", d, "bysykkel.db")

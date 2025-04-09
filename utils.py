@@ -1,5 +1,6 @@
 import sqlite3
 
+import pandas as pd
 from shiny.ui import insert_accordion_panel
 
 # Checks if username is valid
@@ -51,12 +52,24 @@ def insert_to_table(table, dict_attributes_values, db_path):
         print("Not added")
         print(sql_command)
         return False
+    
+def search_table(search, table, main_attr, attributes, db_path):
+    attr = ",".join(attributes) 
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+    sql_command = f"SELECT {attr} FROM {table} WHERE {main_attr} LIKE '%{search}%';"
+    table = pd.read_sql_query(sql_command, con)
+
+    return table
+
+print(search_table("han", "user", "user_name", ["user_name", "user_phone_number"], "bysykkel.db"))
 
 # test_insert_to_table
-d = {
-        "user_name" : "'meg'",
-        "user_phone_number" : "1222222222'",
-        "user_email" : "'@@@@@t@@@@@'"
-        }
+# d = {
+#         "user_name" : "'meg'",
+#         "user_phone_number" : "1222222222'",
+#         "user_email" : "'@@@@@t@@@@@'"
+#         }
 
-insert_to_table("user", d, "bysykkel.db")
+# insert_to_table("user", d, "bysykkel.db")

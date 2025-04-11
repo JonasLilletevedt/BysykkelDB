@@ -60,7 +60,7 @@ with ui.card():
                 }
 
             if(insert_to_table("user", d, path)):
-                return "User added"
+                return f"User added \n user_name = {input.user_email()} \n user_phone_number = {input.user_phone_number()} \n user_email = {input.user_name()}"
             else:
                 return "WTF"
         else:

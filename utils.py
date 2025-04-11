@@ -63,6 +63,31 @@ def search_table(search, table, main_attr, attributes, db_path):
 
     return table
 
+
+def get_trips_ended_on_all_stations(db_path):
+        
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    sql_command = """
+    SELECT
+        count(station_name) AS count,
+        s.station_name
+    FROM  
+        trip AS t 
+    JOIN 
+        station AS s 
+        WHERE t.end_station_id == s.station_id
+    GROUP BY s.station_name
+    """
+
+    table = pd.read_sql_query(sql_command, con)
+    
+    return table
+
+print(get_trips_ended_on_all_stations("bysykkel.db"))
+
 print(search_table("han", "user", "user_name", ["user_name", "user_phone_number"], "bysykkel.db"))
 
 # test_insert_to_table
@@ -73,3 +98,4 @@ print(search_table("han", "user", "user_name", ["user_name", "user_phone_number"
 #         }
 
 # insert_to_table("user", d, "bysykkel.db")
+

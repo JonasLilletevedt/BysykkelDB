@@ -21,7 +21,7 @@ def check_phone_number(phone_number):
 
     if len(phone_number) != 8:
         return False
-    
+
     digits = "0123456789"
     for d in phone_number:
         if d not in digits:
@@ -52,7 +52,7 @@ def insert_to_table(table, dict_attributes_values, db_path):
         print("Not added")
         print(sql_command)
         return False
-    
+
 def search_table(search, table, main_attr, attributes, db_path):
     attr = ",".join(attributes) 
     # Connection to db
@@ -65,12 +65,12 @@ def search_table(search, table, main_attr, attributes, db_path):
 
 
 def get_trips_ended_on_all_stations(db_path):
-        
+
     # Connection to db
     con = sqlite3.connect(db_path)
     cur = con.cursor()
 
-    sql_command = """
+    sql_command = f"""
     SELECT
         count(station_name) AS count,
         s.station_name
@@ -79,16 +79,101 @@ def get_trips_ended_on_all_stations(db_path):
     JOIN 
         station AS s 
         WHERE t.end_station_id == s.station_id
-    GROUP BY s.station_name
+    GROUP BY
+        s.station_name
     """
 
     table = pd.read_sql_query(sql_command, con)
-    
+
     return table
 
-print(get_trips_ended_on_all_stations("bysykkel.db"))
 
-print(search_table("han", "user", "user_name", ["user_name", "user_phone_number"], "bysykkel.db"))
+def get_available_bikes_based_on_station_and_bike_name(db_path, filter_station, filter_bike):
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    sql_command = f"""
+    SELECT
+        s.station_id,
+        s.station_name,
+        b.bike_name
+    FROM 
+        bike AS b
+    INNER JOIN 
+        station AS s
+        ON b.bike_station_id == s.station_id
+    WHERE
+        b.bike_status = 'Parked'
+        AND s.station_name LIKE '%{filter_station}%'
+        AND b.bike_name LIKE '%{filter_bike}%'
+    """
+
+    table = pd.read_sql_query(sql_command, con)
+
+    return table
+
+def get_station_names(db_path):
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    sql_command = f"""
+    SELECT
+        station_name FROM station
+    """
+
+    table = pd.read_sql_query(sql_command, con)
+
+    data = pd.DataFrame.to_dict(table)["station_name"]
+    res = {}
+    for value in data.values():
+        res[value] = value
+    return res
+
+def get_first_available_bike(db_path, station_name):
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    sql_command = f"""
+    SELECT
+        b.bike_id,
+        b.bike_name
+    FROM 
+        bike AS b
+    INNER JOIN 
+        station AS s
+        ON b.bike_station_id == s.station_id
+    WHERE
+        b.bike_status = 'Parked'
+        AND s.station_name == '{station_name}'
+    LIMIT 
+        1
+    """
+
+    table = pd.read_sql_query(sql_command, con)
+    res =  table["bike_id"].tolist() + table["bike_name"].tolist()
+
+    return res
+
+def bike_checkout(db_path, bike_id, bike_status):
+    # Connection to db
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+
+    sql_command = f"""
+    UPDATE
+        bike
+    SET
+        bike_status = ?
+    WHERE 
+        bike_id = ?
+    """
+
+    cur.execute(sql_command, (bike_status,bike_id))
+    con.commit()
+
 
 # test_insert_to_table
 # d = {

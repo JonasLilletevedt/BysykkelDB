@@ -99,8 +99,9 @@ ui.h1("BYSYKKEL DATABSE:)")
 @render.data_frame
 def render_table1():
     # User input through selectize
-    inp = input.selectize()
+    inp = input_selectize()
     # Shows coorect table based on user input
     table_df = get_table_from_task(inp)
     return table_df
+
 

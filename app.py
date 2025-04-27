@@ -28,7 +28,7 @@ with ui.layout_columns():
         @render.text  
         def error_phone_number():
             if not check_phone_number(input.user_phone_number()):
-                return "phone number is not valid, should be exactly nine digits"
+                return "phone number is not valid, should be exactly eight digits"
             else:
                 return "phone number is valid"
 
@@ -41,11 +41,6 @@ with ui.layout_columns():
             
 def check_all_inputs(user_name, user_phone_number, user_email):
     return check_valid_name(user_name) and check_phone_number(user_phone_number) and check_valid_email(user_email)
-
-
-
-# Path to db
-path = "bysykkel.db"
 
 ui.input_action_button("sub", "Submit")  
     
@@ -60,8 +55,8 @@ with ui.card():
                 "user_email" : f"'{input.user_email()}'"
                 }
 
-            if(insert_to_table("user", d, path)):
-                return f"User added \n user_name = {input.user_email()} \n user_phone_number = {input.user_phone_number()} \n user_email = {input.user_name()}"
+            if(insert_to_table("user", d)):
+                return f"User added \n user_name = {input.user_name()} \n user_phone_number = {input.user_phone_number()} \n user_email = {input.user_name()}"
             else:
                 return "WTF"
         else:

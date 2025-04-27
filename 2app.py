@@ -5,8 +5,7 @@ from utils import *
 from shiny import render, ui
 from shiny.express import input
 
-path = "bysykkel.db"
-
+### ----------------- TASK2 -----------------------###
 def getTable(table_name):
     # Whitelist
     whitelist = {"user", "bike", "subscription"}
@@ -31,16 +30,16 @@ def getTable(table_name):
 def get_task_a():
     table_df = search_table(input.input_filter_a(), 
                                 "user", "user_name", 
-                                ["user_name", "user_phone_number"], 
-                                path)
+                                ["user_name", "user_phone_number"] 
+                                )
     return table_df
 
 def get_task_b():
-    table_df = get_trips_ended_on_all_stations(path)
+    table_df = get_trips_ended_on_all_stations()
     return table_df
 
 def get_task_c(): 
-    return get_available_bikes_based_on_station_and_bike_name(path, input.station_filter_name(), input.bike_filter_name())
+    return get_available_bikes_based_on_station_and_bike_name(input.station_filter_name(), input.bike_filter_name())
 
 
 

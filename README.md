@@ -1,5 +1,8 @@
 # OBLIG2 INF115
 
+>[!NOTE] Jobbet med
+> @mkn0536
+
 ## TL;DR (Quick Start)
 
 ```bash

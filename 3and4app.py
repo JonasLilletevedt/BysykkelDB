@@ -83,7 +83,7 @@ with ui.layout_column_wrap():
             "Choose station",
             get_station_names()
         )
-        ui.input_switch("get_park_mode_switch", "Available spots to take bike, or park")
+        ui.input_switch("get_park_mode_switch", "Find availble bike, instead of parking spots")
         @render.table(render_links=True, escape=False)
         def mapp():
             mode = 'park' if input.get_park_mode_switch() else 'get'

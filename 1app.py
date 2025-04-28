@@ -1,8 +1,8 @@
 
 from shiny import reactive, render
 from shiny.express import input, render, ui
-import utils
-from utils import *
+import controller
+from controller import *
 
 ui.page_opts(fillable=True)
 ###---------------- TASK1 -----------------------###
@@ -51,7 +51,7 @@ with ui.card():
                 }
 
             if(insert_to_table("user", d)):
-                return f"User added \n user_name = {input.user_name()} \n user_phone_number = {input.user_phone_number()} \n user_email = {input.user_name()}"
+                return f"User added \n user_name = {input.user_name()} \n user_phone_number = {input.user_phone_number()} \n user_email = {input.user_email()}"
             else:
                 return "WTF"
         else:

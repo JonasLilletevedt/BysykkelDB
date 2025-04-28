@@ -1,7 +1,9 @@
 import sqlite3
 import pandas as pd
-import utils
-from utils import *
+import controller
+from controller import *
+import model
+from model import *
 from shiny import render, ui
 from shiny.express import input
 
@@ -43,7 +45,7 @@ ui.input_selectize(
 ui.output_ui("conditional_controls")
 ui.h1("BYSYKKEL DATABSE:)")
 @render.ui
-def conditional_controls():
+def conditional_controls_def():
     task = input.selectize()
     if task == "a":
         return ui.input_text(

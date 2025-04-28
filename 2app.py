@@ -6,27 +6,6 @@ from shiny import render, ui
 from shiny.express import input
 
 ### ----------------- TASK2 -----------------------###
-def getTable(table_name):
-    # Whitelist
-    whitelist = {"user", "bike", "subscription"}
-    if table_name not in whitelist:
-        return "ERROR: Wrong table name"
-    # Open connection to database
-    con = sqlite3.connect('bysykkel.db')
-
-    # Use parameterized query to prevent SQL injection
-    query = f"SELECT * FROM {table_name}"
-    
-    # Execute query with the table name
-    df = pd.read_sql_query(query, con)
-    
-    # Close the connection
-    con.close()
-
-    return df
-
-
-
 def get_task_a():
     table_df = search_table(input.input_filter_a(), 
                                 "user", "user_name", 
@@ -41,8 +20,6 @@ def get_task_b():
 def get_task_c(): 
     return get_available_bikes_based_on_station_and_bike_name(input.station_filter_name(), input.bike_filter_name())
 
-
-
 # Chooses correct table based in user input
 def get_table_from_task(task):
     if task == "a": 
@@ -53,7 +30,6 @@ def get_table_from_task(task):
         return get_task_c()
     else:
         return pd.DataFrame()
-        
 
 # Allows user input
 ui.input_selectize(  
@@ -65,8 +41,6 @@ ui.input_selectize(
 ) 
 
 ui.output_ui("conditional_controls")
-
-
 ui.h1("BYSYKKEL DATABSE:)")
 @render.ui
 def conditional_controls():
@@ -89,8 +63,6 @@ def conditional_controls():
                           "Filter bike name",
                           "")
         ]
-
-
 # Renders table
 @render.data_frame
 def render_table1():

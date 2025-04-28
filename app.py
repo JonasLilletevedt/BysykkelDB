@@ -5,8 +5,6 @@ import utils
 from utils import *
 
 ui.page_opts(fillable=True)
-
-
 ###---------------- TASK1 -----------------------###
 with ui.layout_columns():
     with ui.card():
@@ -14,16 +12,13 @@ with ui.layout_columns():
         ui.input_text("user_phone_number", "Phone number", "") 
         ui.input_text("user_email", "Email", "") 
 
-
     with ui.card():
-
         @render.text  
         def error_user_name():
             if not check_valid_name(input.user_name()):
                 return "user name is not valid, should only contain english letters"  
             else:
                 return "User name is valid"
-
             
         @render.text  
         def error_phone_number():
@@ -63,7 +58,4 @@ with ui.card():
             return "User not added, wrong input"
 
         
-
-
-
 

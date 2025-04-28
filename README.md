@@ -8,7 +8,8 @@ cd OBLIG-2/
 python3 -m venv .venv
 source .venv/bin/activate  # Use appropriate activate command for your OS/shell (see below)
 pip install -r requirements.txt
-shiny run 1app.py          # Or 2app.py / 3and4app.py```
+shiny run 1app.py          # Or 2app.py / 3and4app.py
+```
 
 
 

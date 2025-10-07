@@ -1,90 +1,108 @@
-# OBLIG2 INF115
+# Bysykkel-database — kort oversikt
 
-> Jobbet med
-> @mkn0536
+**TL;DR:** Design og implementasjon av en relasjonsdatabase for et bysykkelsystem, med transaksjonell check-in/check-out, REST API og en enkel Flask-frontend for brukerregistrering og sanntids bruk. Inkluderer schema, transaksjonstester og demo/kode.
 
-## TL;DR (Quick Start)
+## Hva prosjektet handler om
 
-```bash
-git clone [https://github.com/JL2023-coder/OBLIG-2](https://github.com/JL2023-coder/OBLIG-2)
-cd OBLIG-2/
-python3 -m venv .venv
-source .venv/bin/activate  # Use appropriate activate command for your OS/shell (see below)
-pip install -r requirements.txt
-shiny run 1app.py          # Or 2app.py / 3and4app.py
-```
+- Designet en relasjonsdatabase (SQLite) for bysykler med hovedtabeller: `users`, `bikes`, `stations`, `trips`. Skjemaet er normalisert for dataintegritet og effektive spørringer.
+- Implementerte og testet transaksjonell logikk for sikker check-in/check-out og samtidighetskontroll (ACID-tenkning), transaksjonene er atomiske: hele transaksjonsomgangen commit'es eller rollback'es ved feil.
+- Bygget Shiny-applikasjoner som håndterer UI, input og serverlogikk; Shiny fungerer her både som «frontend» og applikasjonsserver.
+- Repository inneholder `schema.sql` / init-skript, Shiny-app-filer (`1app.py`, `2app.py`, `3and4app.py`) og dokumentasjon for hvordan man starter og tester lokalt.
 
+## Teknologistack
 
-## How to Set Up and Run
+- Database: **SQLite** (lokal fil-basert DB)
+- UI / server: **Shiny for Python** (Shiny håndterer view, UI og input/server-logikk)
+- Datahåndtering: **pandas** (ETL, rensing og transformasjoner)
+- Testing: **Manuell testing**
+- Miljø: **`requirements.txt`** for å installere avhengigheter i et virtuelt miljø (venv)
 
-Follow these steps to set up the environment and run the Shiny web applications.
+## Skjemastruktur (kort)
 
-1.  **Clone the Repository:**
-    Open your terminal or command prompt and download the project files from GitHub.
-    ```bash
-    git clone [https://github.com/JL2023-coder/OBLIG-2](https://github.com/JL2023-coder/OBLIG-2)
-    ```
+- `users(id, name, email,  ...)`
+- `bikes(id, bike_code, status, station_id, ...)`
+- `stations(id, name, capacity, location_lat, location_lng, ...)`
+- `trips(id, user_id, bike_id, start_station_id, end_station_id, start_time, end_time, ...)`
 
-2.  **Navigate into Project Directory:**
-    Change into the newly created project directory.
-    ```bash
-    cd OBLIG-2/
-    ```
+## Viktige implementasjonsdetaljer
 
-3.  **Create a Virtual Environment:**
-    Create an isolated Python environment for the project. We'll name it `.venv`.
-    ```bash
-    python3 -m venv .venv
-    ```
+- **Transaksjoner:** Check-in/check-out håndteres i en enkelt transaksjon som oppdaterer `bikes` og skriver til `trips` for å unngå race conditions. Bruker låsing (`SELECT ... FOR UPDATE`) der nødvendig. Transaksjonen er **atomisk** — enten fullføres hele transaksjonsomgangen (COMMIT) eller alt rulles tilbake (ROLLBACK) ved feil, slik at systemet aldri ender i en inkonsistent tilstand.
+- **Validering:** APIen validerer input for å forhindre inkonsistente tilstander (f.eks. sjekker at sykkel er tilgjengelig før checkout).
+- **Feilhåndtering:** Retry-/logging-strategi for transaksjonsfeil og konflikter; hvis en transaksjon feiler, rulles den tilbake og et kontrollert retry-forsøk eller feilmelding håndteres av APIen. En kort beskrivelse av retry-logikk og loggformat er inkludert i README.
 
-4.  **Activate the Virtual Environment:**
-    Activate the environment using the command specific to your shell:
+## Hva du finner i repoet
 
-    * **Linux/macOS (bash/zsh):**
-        ```bash
-        source .venv/bin/activate
-        ```
-    * **Linux/macOS (fish):**
-        ```fish
-        source .venv/bin/activate.fish
-        ```
-    * **Windows (Command Prompt):**
-        ```batch
-        .\.venv\Scripts\activate.bat
-        ```
-    * **Windows (PowerShell):**
-        ```powershell
-        .\.venv\Scripts\Activate.ps1
-        ```
+- `schema.sql`: DDL-skript for å opprette databasetabeller og indekser
+- `1app.py`, `2app.py`, `3and4app.py`: Shiny-applikasjoner for ulike deler av funksjonaliteten
+- `requirements.txt`: Liste over Python-pakker som kreves for å kjøre applikasjonene
+- `README.md`: Prosjektoversikt og instruksjoner for oppsett/kjøring
+- `.gitignore`: Filer som skal ignoreres av versjonskontroll
 
-    Your terminal prompt should now indicate that the `.venv` environment is active.
+## Kjapp demo (for å prøve lokalt)
 
-5.  **Install Requirements:**
-    Install the necessary Python packages listed in `requirements.txt`.
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Oppsett og kjøring
 
-6.  **Run the Websites:**
-    The project contains three separate Shiny applications: `1app.py`, `2app.py`, and `3and4app.py`. 
-    Each file creates its own website with its respective tasks.
+Følg disse trinnene for å sette opp miljøet og kjøre Shiny-webapplikasjonene.
 
-    To run a specific application, use the `shiny run` command followed by the filename. For example:
+1. **Klon repositoriet:**
+   Åpne terminalen eller kommandolinjen og last ned prosjektfilene fra GitHub.
 
-    * **To run the first app:**
-        ```bash
-        shiny run 1app.py
-        ```
-    * **To run the second app:**
-        ```bash
-        shiny run 2app.py
-        ```
-    * **To run the third/fourth app:**
-        ```bash
-        shiny run 3and4app.py
-        ```
+   ```bash
+   git clone [https://github.com/todo/OBLIG-2](todo)
+   ```
 
-    After running the command, Shiny will output a local URL (usually like `http://127.0.0.1:8000`). 
-    Open this URL in your web browser to view the application. 
-    You might need to stop one app (usually with `Ctrl+C` in the terminal) before starting another.
+2. **Naviger til prosjektmappen:**
+   Gå inn i den nyopprettede prosjektmappen.
+
+   ```bash
+   cd OBLIG-2/
+   ```
+
+3. **Opprett et virtuelt miljø:**
+   Lag et isolert Python-miljø for prosjektet. Vi kaller det `.venv`.
+
+   ```bash
+   python3 -m venv .venv
+   ```
+
+4. **Aktiver det virtuelle miljøet:**
+   Aktiver miljøet med kommandoen som passer til ditt shell:
+
+   - **Linux/macOS (bash/zsh):**
+     ```bash
+     source .venv/bin/activate
+     ```
+
+   Terminalprompten din skal nå indikere at `.venv`-miljøet er aktivt.
+
+5. **Installer krav:**
+   Installer de nødvendige Python-pakkene som er listet i `requirements.txt`.
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+6. **Kjør nettsidene:**
+   Prosjektet inneholder tre separate Shiny-applikasjoner: `1app.py`, `2app.py` og `3and4app.py`.
+   Hver fil oppretter sin egen nettside med sine respektive oppgaver.
+
+   For å kjøre en spesifikk applikasjon, bruk `shiny run`-kommandoen etterfulgt av filnavnet. For eksempel:
+
+   - **For å kjøre den første appen:**
+     ```bash
+     shiny run 1app.py
+     ```
+   - **For å kjøre den andre appen:**
+     ```bash
+     shiny run 2app.py
+     ```
+   - **For å kjøre den tredje/fjerde appen:**
+     ```bash
+     shiny run 3and4app.py
+     ```
+
+   Etter å ha kjørt kommandoen vil Shiny vise en lokal URL (vanligvis som `http://127.0.0.1:8000`).
+   Åpne denne URL-en i nettleseren din for å se applikasjonen.
+   Du må kanskje stoppe én app (vanligvis med `Ctrl+C` i terminalen) før du starter en annen.
+
 

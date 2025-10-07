@@ -48,7 +48,7 @@ Følg disse trinnene for å sette opp miljøet og kjøre Shiny-webapplikasjonene
    Åpne terminalen eller kommandolinjen og last ned prosjektfilene fra GitHub.
 
    ```bash
-   git clone [https://github.com/JonasLilletevedt/BysykkelDB](https://github.com/JonasLilletevedt/BysykkelDB)
+   git clone https://github.com/JonasLilletevedt/BysykkelDB
    ```
 
 2. **Naviger til prosjektmappen:**

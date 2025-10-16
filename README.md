@@ -26,7 +26,7 @@
 
 ## Viktige implementasjonsdetaljer
 
-- **Transaksjoner:** Check-in/check-out håndteres i en enkelt transaksjon som oppdaterer `bikes` og skriver til `trips` for å unngå race conditions. Bruker låsing (`SELECT ... FOR UPDATE`) der nødvendig. Transaksjonen er **atomisk** — enten fullføres hele transaksjonsomgangen (COMMIT) eller alt rulles tilbake (ROLLBACK) ved feil, slik at systemet aldri ender i en inkonsistent tilstand.
+- **Transaksjoner:** Check-in/check-out håndteres i en enkelt transaksjon som oppdaterer `bikes` og skriver til `trips` for å unngå race conditions. Bruker låsing (`SELECT ... FOR UPDATE`) der nødvendig. Transaksjonen er atomisk: Vi behandler kun én transaksjon om gangen og verifiserer at hele transaksjonen kan gjennomføres før vi gjør endringer i databasen. Slik opprettholder vi konsistens.
 - **Validering:** APIen validerer input for å forhindre inkonsistente tilstander (f.eks. sjekker at sykkel er tilgjengelig før checkout).
 - **Feilhåndtering:** Retry-/logging-strategi for transaksjonsfeil og konflikter; hvis en transaksjon feiler, rulles den tilbake og et kontrollert retry-forsøk eller feilmelding håndteres av APIen. En kort beskrivelse av retry-logikk og loggformat er inkludert i README.
 
@@ -55,7 +55,7 @@ Følg disse trinnene for å sette opp miljøet og kjøre Shiny-webapplikasjonene
    Gå inn i den nyopprettede prosjektmappen.
 
    ```bash
-   cd OBLIG-2/
+   cd BysykkelDB/
    ```
 
 3. **Opprett et virtuelt miljø:**
